@@ -71,4 +71,24 @@ describe('roductsController', () => {
             expect(next).toHaveBeenCalledWith(error);
         });
     });
+
+    describe('create method should be called', () => {
+        test('Json should be called when response is valid', async () => {
+            //Act
+            await productsRepo.create(req, res, next);
+            //Assert
+            expect(res.json).toHaveBeenCalledWith({
+                results: [],
+                error: '',
+            });
+        });
+        test('Next should be called when throw an error', async () => {
+            //Arrange
+            (mockRepo.create as Mock).mockRejectedValueOnce(error);
+            //Act
+            await productsRepo.create(req, res, next);
+            //Assert
+            expect(next).toHaveBeenCalledWith(error);
+        });
+    });
 });
