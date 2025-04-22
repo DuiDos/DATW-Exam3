@@ -1,5 +1,6 @@
 import { ProductsController } from './products.controller';
 import { vi, Mock } from 'vitest';
+import { NextFunction, Request, Response } from 'express';
 
 const mockRepo = {
     read: vi.fn().mockResolvedValueOnce([]),
@@ -87,6 +88,46 @@ describe('roductsController', () => {
             (mockRepo.create as Mock).mockRejectedValueOnce(error);
             //Act
             await productsRepo.create(req, res, next);
+            //Assert
+            expect(next).toHaveBeenCalledWith(error);
+        });
+    });
+
+    describe('update method should be called', () => {
+        test('Json should be called when response is valid', async () => {
+            //Act
+            await productsRepo.update(req, res, next);
+            //Assert
+            expect(res.json).toHaveBeenCalledWith({
+                results: [],
+                error: '',
+            });
+        });
+        test('Next should be called when throw an error', async () => {
+            //Arrange
+            (mockRepo.create as Mock).mockRejectedValueOnce(error);
+            //Act
+            await productsRepo.update(req, res, next);
+            //Assert
+            expect(next).toHaveBeenCalledWith(error);
+        });
+    });
+
+    describe('delete method should be called', () => {
+        test('Json should be called when response is valid', async () => {
+            //Act
+            await productsRepo.delete(req, res, next);
+            //Assert
+            expect(res.json).toHaveBeenCalledWith({
+                results: [],
+                error: '',
+            });
+        });
+        test('Next should be called when throw an error', async () => {
+            //Arrange
+            (mockRepo.create as Mock).mockRejectedValueOnce(error);
+            //Act
+            await productsRepo.delete(req, res, next);
             //Assert
             expect(next).toHaveBeenCalledWith(error);
         });
