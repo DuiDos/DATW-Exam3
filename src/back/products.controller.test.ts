@@ -32,8 +32,8 @@ describe('roductsController', () => {
         expect(productsRepo).toBeInstanceOf(ProductsController);
     });
 
-    describe('getAll method should be call', () => {
-        test('Json should be called json when response is valid', async () => {
+    describe('getAll method should be called', () => {
+        test('Json should be called when response is valid', async () => {
             //Act
             await productsRepo.getAll(req, res, next);
             //Assert
@@ -47,6 +47,26 @@ describe('roductsController', () => {
             (mockRepo.read as Mock).mockRejectedValueOnce(error);
             //Act
             await productsRepo.getAll(req, res, next);
+            //Assert
+            expect(next).toHaveBeenCalledWith(error);
+        });
+    });
+
+    describe('getById methos should be called', () => {
+        test('Json should be called when response is valid', async () => {
+            //Act
+            await productsRepo.getById(req, res, next);
+            //Assert
+            expect(res.json).toHaveBeenCalledWith({
+                results: [],
+                error: '',
+            });
+        });
+        test('Next should be called when throw an error', async () => {
+            //Arrange
+            (mockRepo.readById as Mock).mockRejectedValueOnce(error);
+            //Act
+            await productsRepo.getById(req, res, next);
             //Assert
             expect(next).toHaveBeenCalledWith(error);
         });
